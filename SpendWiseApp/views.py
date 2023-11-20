@@ -17,7 +17,6 @@ def login_user(request):
         else:
             messages.error(request, 'Username or password is incorrect')
 
-
     return render(request, 'login.html')
 
 
@@ -39,3 +38,7 @@ def signup_user(request):
             context = {'username': username}
 
     return render(request, 'signup.html', context)
+
+
+def home(request):
+    return render(request, 'dashboard.html')

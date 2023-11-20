@@ -71,6 +71,7 @@ TEMPLATES = [
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
+    BASE_DIR / "static/dashboard",
 ]
 
 WSGI_APPLICATION = 'SpendWise.wsgi.application'
