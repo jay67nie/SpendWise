@@ -1,0 +1,8 @@
+#error-messages-container {
+    opacity: 1;
+    transition: opacity 1.5s ease; /* Adjust the duration as needed */
+}
+
+.fade-out {
+    opacity: 0;
+}
