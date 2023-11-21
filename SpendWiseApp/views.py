@@ -29,10 +29,13 @@ def signup_user(request):
     # Get all the data from the form and create the user
     context = {}
     if request.method == 'POST':
+        full_name = request.POST.get('full_name')
+        email = request.POST.get('email')
         username = request.POST.get('username')
         password = request.POST.get('password')
         password_confirm = request.POST.get('confirm_password')
 
+        first_name,last_name = full_name.split(' ',1) if ' ' in full_name else(full_name,'')
 
         if password == password_confirm:
             print('Passwords are the same')
@@ -41,7 +44,7 @@ def signup_user(request):
 
             else:
                 print('Username doesnt exist')
-                user = User.objects.create_user(username=username, password=password)
+                user = User.objects.create_user(username=username, password=password, first_name=first_name, last_name=last_name, email=email);
                 user.save()
                 return redirect('login')
 
