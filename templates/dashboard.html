@@ -260,10 +260,11 @@
               </div>
               <div class="card-body">
 
-                <form id="expense-form" class="signin-form" method="post">
+                <form id="expense-form" action="{% url 'log_expense' %}" class="signin-form" method="post">
+                    {%  csrf_token %}
                     <div class="form-group">
                         <label for="amount">Amount</label>
-                        <input type="number" class="form-control" id="amount" placeholder="Amount" name="expense_name">
+                        <input type="number" class="form-control" id="amount" placeholder="Amount" name="expense_amount">
                     </div>
                     <div class="form-group">
                         <label for="category">Category</label>
@@ -277,9 +278,13 @@
                         <label for="description">Description</label>
                     <input type="text" class="form-control" id="description" placeholder="Description" name="expense_description">
                     </div>
+                    <div class="form-group">
+	            	<button type="submit" class="form-control btn btn-primary submit px-3">Submit</button>
+	            </div>
                 </form>
 
-                <form id="income-form" class="signin-form" method="post" style="display: none;">
+                <form id="income-form" action="{% url 'log_income' %}" class="signin-form" method="post" style="display: none;">
+                    {%  csrf_token %}
                     <div class="form-group">
                         <label for="amount">Amount</label>
                         <input type="number" class="form-control" id="amount" placeholder="Amount" name="income_amount">
@@ -296,6 +301,9 @@
                         <label for="description">Description</label>
                     <input type="text" class="form-control" id="description" placeholder="Description" name="income_description">
                     </div>
+                    <div class="form-group">
+	            	<button type="submit" class="form-control btn btn-primary submit px-3">Submit</button>
+	            </div>
                 </form>
               </div>
             </div>
