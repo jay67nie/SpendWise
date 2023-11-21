@@ -358,7 +358,7 @@ demo = {
     gradientStroke.addColorStop(0, 'rgba(119,52,169,0)'); //purple colors
 
     var data = {
-      labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+      labels: expense_data_labels,
       datasets: [{
         label: "Data",
         fill: true,
@@ -374,7 +374,7 @@ demo = {
         pointHoverRadius: 4,
         pointHoverBorderWidth: 15,
         pointRadius: 4,
-        data: [80, 100, 70, 80, 120, 80],
+        data: expense_data_points,
       }]
     };
 
@@ -385,46 +385,45 @@ demo = {
     });
 
 
-    var ctxGreen = document.getElementById("chartLineGreen").getContext("2d");
-
-    var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
-
-    gradientStroke.addColorStop(1, 'rgba(66,134,121,0.15)');
-    gradientStroke.addColorStop(0.4, 'rgba(66,134,121,0.0)'); //green colors
-    gradientStroke.addColorStop(0, 'rgba(66,134,121,0)'); //green colors
+    var ctxGreen = document.getElementById("chartPieGreen").getContext("2d");
 
     var data = {
-      labels: ['JUL', 'AUG', 'SEP', 'OCT', 'NOV'],
+      labels: category_data_labels,
       datasets: [{
-        label: "My First dataset",
-        fill: true,
-        backgroundColor: gradientStroke,
-        borderColor: '#00d6b4',
-        borderWidth: 2,
-        borderDash: [],
-        borderDashOffset: 0.0,
-        pointBackgroundColor: '#00d6b4',
-        pointBorderColor: 'rgba(255,255,255,0)',
-        pointHoverBackgroundColor: '#00d6b4',
-        pointBorderWidth: 20,
-        pointHoverRadius: 4,
-        pointHoverBorderWidth: 15,
-        pointRadius: 4,
-        data: [90, 27, 60, 12, 80],
+        data: category_data_points,
+        backgroundColor: [
+          'rgba(66,134,121,0.8)',
+          'rgba(66,134,121,0.6)',
+          'rgba(66,134,121,0.4)',
+          'rgba(66,134,121,0.2)',
+          'rgba(66,134,121,0.1)',
+        ],
+        hoverBackgroundColor: [
+          'rgba(66,134,121,1)',
+          'rgba(66,134,121,0.9)',
+          'rgba(66,134,121,0.7)',
+          'rgba(66,134,121,0.5)',
+          'rgba(66,134,121,0.3)',
+        ],
       }]
     };
 
     var myChart = new Chart(ctxGreen, {
-      type: 'line',
+      type: 'pie',
       data: data,
-      options: gradientChartOptionsConfigurationWithTooltipGreen
-
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: true,
+          position: 'bottom',
+        },
+      }
     });
 
 
-
-    var chart_labels = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-    var chart_data = [100, 70, 90, 70, 85, 60, 75, 60, 90, 80, 110, 100];
+    var chart_labels = income_data_labels;
+    var chart_data = income_data_points;
 
 
     var ctx = document.getElementById("chartBig1").getContext('2d');
@@ -437,9 +436,9 @@ demo = {
     var config = {
       type: 'line',
       data: {
-        labels: chart_labels,
+        labels: income_data_labels,
         datasets: [{
-          label: "My First dataset",
+          label: "Monthly Expense",
           fill: true,
           backgroundColor: gradientStroke,
           borderColor: '#d346b1',
@@ -453,19 +452,20 @@ demo = {
           pointHoverRadius: 4,
           pointHoverBorderWidth: 15,
           pointRadius: 4,
-          data: chart_data,
+          data: income_data_points,
         }]
       },
       options: gradientChartOptionsConfigurationWithTooltipPurple
     };
     var myChartData = new Chart(ctx, config);
-    $("#0").click(function() {
+    $("#0").click(function () {
       var data = myChartData.config.data;
-      data.datasets[0].data = chart_data;
-      data.labels = chart_labels;
+      data.datasets[0].data = income_data_points;
+      data.labels = income_data_labels
+      console.log("Updating chart with data:", data);
       myChartData.update();
     });
-    $("#1").click(function() {
+    $("#1").click(function () {
       var chart_data = [80, 120, 105, 110, 95, 105, 90, 100, 80, 95, 70, 120];
       var data = myChartData.config.data;
       data.datasets[0].data = chart_data;
@@ -473,7 +473,7 @@ demo = {
       myChartData.update();
     });
 
-    $("#2").click(function() {
+    $("#2").click(function () {
       var chart_data = [60, 80, 65, 130, 80, 105, 90, 130, 70, 115, 60, 130];
       var data = myChartData.config.data;
       data.datasets[0].data = chart_data;
@@ -481,40 +481,53 @@ demo = {
       myChartData.update();
     });
 
+    var ctx = document.getElementById("MonthlyComparisonChart").getContext("2d");
 
-    var ctx = document.getElementById("CountryChart").getContext("2d");
+var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
+gradientStroke.addColorStop(1, 'rgba(29,140,248,0.2)');
+gradientStroke.addColorStop(0.4, 'rgba(29,140,248,0.0)');
+gradientStroke.addColorStop(0, 'rgba(29,140,248,0)'); // blue colors
 
-    var gradientStroke = ctx.createLinearGradient(0, 230, 0, 50);
-
-    gradientStroke.addColorStop(1, 'rgba(29,140,248,0.2)');
-    gradientStroke.addColorStop(0.4, 'rgba(29,140,248,0.0)');
-    gradientStroke.addColorStop(0, 'rgba(29,140,248,0)'); //blue colors
-
-
-    var myChart = new Chart(ctx, {
-      type: 'bar',
-      responsive: true,
-      legend: {
-        display: false
+var myChart = new Chart(ctx, {
+  type: 'bar',
+  responsive: true,
+  legend: {
+    display: true, // display the legend if needed
+    position: 'top', // adjust the legend position as needed
+  },
+  data: {
+    labels: income_data_labels, // add your month labels
+    datasets: [
+      {
+        label: "Income",
+        fill: true,
+        backgroundColor: gradientStroke,
+        hoverBackgroundColor: gradientStroke,
+        borderColor: '#1f8ef1',
+        borderWidth: 2,
+        borderDash: [],
+        borderDashOffset: 0.0,
+        data: income_data_points,
       },
-      data: {
-        labels: ['USA', 'GER', 'AUS', 'UK', 'RO', 'BR'],
-        datasets: [{
-          label: "Countries",
-          fill: true,
-          backgroundColor: gradientStroke,
-          hoverBackgroundColor: gradientStroke,
-          borderColor: '#1f8ef1',
-          borderWidth: 2,
-          borderDash: [],
-          borderDashOffset: 0.0,
-          data: [53, 20, 10, 80, 100, 45],
-        }]
+      {
+        label: "Expenses",
+        fill: true,
+        backgroundColor: 'rgba(255, 99, 132, 0.2)', // adjust color as needed
+        hoverBackgroundColor: 'rgba(255, 99, 132, 0.4)', // adjust color as needed
+        borderColor: 'rgba(255, 99, 132, 1)', // adjust color as needed
+        borderWidth: 2,
+        borderDash: [],
+        borderDashOffset: 0.0,
+        data: expense_data_points,
       },
-      options: gradientBarChartConfiguration
-    });
+    ],
+  },
+  options: gradientBarChartConfiguration,
+});
+
 
   },
+
 
   initGoogleMaps: function() {
     var myLatlng = new google.maps.LatLng(40.748817, -73.985428);
