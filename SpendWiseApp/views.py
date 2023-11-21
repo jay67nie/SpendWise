@@ -28,12 +28,20 @@ def signup_user(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        password_confirm = request.POST.get('password_confirm')
+        password_confirm = request.POST.get('confirm_password')
+
 
         if password == password_confirm:
-            user = User.objects.create_user(username=username, password=password)
-            user.save()
-            return redirect('login')
+            print('Passwords are the same')
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'The useraname you are trying to input exists already')
+
+            else:
+                print('Username doesnt exist')
+                user = User.objects.create_user(username=username, password=password)
+                user.save()
+                return redirect('login')
+
         else:
             messages.error(request, 'Passwords do not match')
             context = {'username': username}
