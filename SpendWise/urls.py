@@ -26,5 +26,5 @@ urlpatterns = [
     path('home/', views.home, name='home'),
     path('log_expense/', views.log_expense, name='log_expense'),
     path('log_income/', views.log_income, name='log_income'),
-    path('expenses/', UserExpenseListView.as_view(), name='expense-list'),
+    path('logout/', views.logout_user, name='logout'),
 ]
