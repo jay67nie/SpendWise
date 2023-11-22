@@ -9,7 +9,11 @@ from django.db.models.functions import TruncMonth, Lower
 from django.shortcuts import render, redirect
 from django.utils.html import escape
 
+from django.contrib.auth import password_validation
+from django.core.exceptions import ValidationError
 from SpendWiseApp.models import Income, Expense
+
+import re
 
 # Create your views here.
 
@@ -52,6 +56,15 @@ def login_user(request):
 
     return render(request, 'login.html')
 
+def validate_password_strength(password):
+    # regexps to check for presence of capital, small and special characters
+    if not re.search(r'[A-Z]', password):
+        raise ValidationError("The password must contain at least one uppercase letter.")
+    if not re.search(r'[a-z]', password):
+        raise ValidationError("The password must contain at least one lowercase letter.")
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        raise ValidationError("The password must contain at least one special character.")
+
 
 
 
@@ -68,6 +81,24 @@ def signup_user(request):
         password_confirm = request.POST.get('confirm_password')
 
         first_name,last_name = full_name.split(' ',1) if ' ' in full_name else(full_name,'')
+
+        # Check for strong password
+        try:
+            password_validation.validate_password(
+                password,
+                user=User,
+                password_validators=[
+                    password_validation.MinimumLengthValidator(8),
+                    password_validation.CommonPasswordValidator(),
+                    password_validation.NumericPasswordValidator(),
+                    validate_password_strength(password)
+
+                ]
+            )
+        except ValidationError as e:
+            messages.error(request, e)
+            context = {'username': username}
+            return render(request, 'signup.html', context)
 
         if password == password_confirm:
             print('Passwords are the same')
