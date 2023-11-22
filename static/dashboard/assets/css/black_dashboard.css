@@ -2658,7 +2658,7 @@ fieldset:disabled a.btn {
 }
 
 .btn-primary {
-  color: #ffffff;
+  color: black;
   background-color: #fcdecd;
   border-color: #fcdecd;
   box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
@@ -13096,7 +13096,7 @@ fieldset[disabled] .navbar .navbar-nav>a.btn.active {
   background-color: #fcdecd;
   transition: all 0.15s ease;
   box-shadow: none;
-  color: #ffffff;
+  color: black;
 }
 
 .btn-primary.animation-on-hover:hover {

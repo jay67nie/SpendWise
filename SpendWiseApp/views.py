@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.db.models import Sum
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth, Lower
 from django.shortcuts import render, redirect
 
 from SpendWiseApp.models import Income, Expense
@@ -71,14 +71,13 @@ def home(request):
     expense_data_points = [str(entry['total_expense']) for entry in monthly_expenses]
 
     # Group expenses by category and calculate the total amount for each category
-    categorized_expenses = Expense.objects.values('category').annotate(total_amount=Sum('amount'))
+    categorized_expenses = Expense.objects.annotate(lower_category=Lower('category')).values('lower_category').annotate(
+        total_amount=Sum('amount'))
 
-    category_labels = [entry['category'] for entry in categorized_expenses]
+    category_labels = [entry['category'].capitalize() for entry in categorized_expenses]
     category_data_points = [str(entry['total_amount']) for entry in categorized_expenses]
 
-
     print(category_data_points)
-
 
     # Pass data to the template
     context = {
@@ -93,3 +92,29 @@ def home(request):
     # print(context.get('income_labels'))
     # print(context.get('income_data_points'))
     return render(request, 'dashboard.html', context)
+
+
+def log_expense(request):
+    if request.method == 'POST':
+        amount = request.POST.get('expense_amount').trim()
+        category = request.POST.get('expense_category').trim()
+        date = request.POST.get('expense_date').trim()
+        description = request.POST.get('expense_description').trim()
+
+        expense = Expense(amount=amount, category=category, date=date, description=description)
+        expense.save()
+
+        return redirect('home')
+
+
+def log_income(request):
+    if request.method == 'POST':
+        amount = request.POST.get('income_amount').trim()
+        source = request.POST.get('income_source').trim()
+        date = request.POST.get('income_date').trim()
+        description = request.POST.get('income_description').trim()
+
+        income = Income(amount=amount, source=source, date=date, description=description)
+        income.save()
+
+        return redirect('home')
