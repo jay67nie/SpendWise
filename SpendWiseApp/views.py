@@ -56,6 +56,15 @@ def login_user(request):
 
     return render(request, 'login.html')
 
+def validate_password_strength(password):
+    # regexps to check for presence of capital, small and special characters
+    if not re.search(r'[A-Z]', password):
+        raise ValidationError("The password must contain at least one uppercase letter.")
+    if not re.search(r'[a-z]', password):
+        raise ValidationError("The password must contain at least one lowercase letter.")
+    if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
+        raise ValidationError("The password must contain at least one special character.")
+
 
 
 
@@ -81,6 +90,24 @@ def signup_user(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         password_confirm = request.POST.get('confirm_password')
+
+        # Check for strong password
+        try:
+            password_validation.validate_password(
+                password,
+                user=User,
+                password_validators=[
+                    password_validation.MinimumLengthValidator(8),
+                    password_validation.CommonPasswordValidator(),
+                    password_validation.NumericPasswordValidator(),
+                    validate_password_strength(password)
+
+                ]
+            )
+        except ValidationError as e:
+            messages.error(request, e)
+            context = {'username': username}
+            return render(request, 'signup.html', context)
 
         if password == password_confirm:
             print('Passwords are the same')
@@ -175,7 +202,7 @@ def get_categorized_expenses_and_labels():
     categorized_expenses = Expense.objects.annotate(lower_category=Lower('category')).values('lower_category').annotate(
         total_amount=Sum('amount'))
 
-    category_labels = [entry['lower_category'].capitalize() for entry in categorized_expenses]
+    category_labels = [entry['category'].capitalize() for entry in categorized_expenses]
     category_data_points = [str(entry['total_amount']) for entry in categorized_expenses]
 
     print(category_data_points)
