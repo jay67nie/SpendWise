@@ -2,11 +2,14 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.db.models import Sum
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth, Lower
 from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+# from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from SpendWiseApp.models import Income, Expense
-
 
 # Create your views here.
 def login_user(request):
@@ -14,6 +17,7 @@ def login_user(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
+        
 
         if user is not None:
             login(request, user)
@@ -22,6 +26,19 @@ def login_user(request):
             messages.error(request, 'Username or password is incorrect')
 
     return render(request, 'login.html')
+
+def get_current_user(request):
+    if request.user.is_authenticated:
+        try:
+            # Retrieve the user instance from the database
+            user = User.objects.get(pk=request.user.id)
+            return user
+        except User.DoesNotExist:
+            # Handle the case where the user is not found
+            return None
+    else:
+        # Handle the case where no user is authenticated
+        return None
 
 
 # Sign up user
@@ -32,7 +49,6 @@ def signup_user(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         password_confirm = request.POST.get('confirm_password')
-
 
         if password == password_confirm:
             print('Passwords are the same')
@@ -68,14 +84,13 @@ def home(request):
     expense_data_points = [str(entry['total_expense']) for entry in monthly_expenses]
 
     # Group expenses by category and calculate the total amount for each category
-    categorized_expenses = Expense.objects.values('category').annotate(total_amount=Sum('amount'))
+    categorized_expenses = Expense.objects.annotate(lower_category=Lower('category')).values('lower_category').annotate(
+        total_amount=Sum('amount'))
 
-    category_labels = [entry['category'] for entry in categorized_expenses]
+    category_labels = [entry['category'].capitalize() for entry in categorized_expenses]
     category_data_points = [str(entry['total_amount']) for entry in categorized_expenses]
 
-
     print(category_data_points)
-
 
     # Pass data to the template
     context = {
@@ -90,3 +105,43 @@ def home(request):
     # print(context.get('income_labels'))
     # print(context.get('income_data_points'))
     return render(request, 'dashboard.html', context)
+
+
+def log_expense(request,expense_id):
+    if request.method == 'POST':
+        amount = request.POST.get('expense_amount').trim()
+        category = request.POST.get('expense_category').trim()
+        date = request.POST.get('expense_date').trim()
+        description = request.POST.get('expense_description').trim()
+        # expense = get_object_or_404(Expense, id=expense_id, user=request.user)
+        
+        user = get_current_user(request)
+
+        expense = Expense(amount=amount, category=category, date=date, description=description, user=user)
+        expense.save()
+
+        return redirect('home')
+
+
+def log_income(request):
+    if request.method == 'POST':
+        amount = request.POST.get('income_amount').trim()
+        source = request.POST.get('income_source').trim()
+        date = request.POST.get('income_date').trim()
+        description = request.POST.get('income_description').trim()
+
+        income = Income(amount=amount, source=source, date=date, description=description)
+        income.save()
+
+        return redirect('home')
+
+
+# class UserExpenseListView(LoginRequiredMixin, ListView):
+#     model = Expense
+#     template_name = 'expense_list.html'
+#     context_object_name = 'expenses'
+#     paginate_by = 10
+
+#     def get_queryset(self):
+#         # Filter expenses based on the currently logged-in user
+#         return Expense.objects.filter(user=self.request.user).order_by('-date')

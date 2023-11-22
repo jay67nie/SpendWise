@@ -17,10 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 import SpendWiseApp.views as views
+from SpendWiseApp.views import UserExpenseListView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', views.login_user, name='login'),
     path('signup/', views.signup_user, name='signup'),
     path('home/', views.home, name='home'),
+    path('log_expense/', views.log_expense, name='log_expense'),
+    path('log_income/', views.log_income, name='log_income'),
+    path('expenses/', UserExpenseListView.as_view(), name='expense-list'),
 ]
