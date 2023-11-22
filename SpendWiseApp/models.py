@@ -9,8 +9,9 @@ class Expense(models.Model):
     date = models.DateTimeField()
     description = models.TextField()
 
-    def __str__(self):
-        return f"{self.amount} - {self.category} - {self.date}"
+    # def __str__(self):
+    #     # Return it as a json string
+    #     return f"{self.amount} - {self.category} - {self.date}"
 
 
 class Income(models.Model):
@@ -19,5 +20,5 @@ class Income(models.Model):
     date = models.DateTimeField()
     description = models.TextField()
 
-    def __str__(self):
-        return f"{self.amount} - {self.source} - {self.date}"
+    # def __str__(self):
+    #     return f"{self.amount} - {self.source} - {self.date}"

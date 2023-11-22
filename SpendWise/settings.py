@@ -40,6 +40,11 @@ INSTALLED_APPS = [
     'SpendWiseApp.apps.SpendwiseappConfig',
 ]
 
+
+
+
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

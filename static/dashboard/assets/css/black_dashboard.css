@@ -241,6 +241,11 @@ table {
   border-collapse: collapse;
 }
 
+.log_form{
+  max-height: 310px;
+  overflow-y: scroll;
+}
+
 caption {
   padding-top: 1rem;
   padding-bottom: 1rem;
@@ -15879,7 +15884,6 @@ img {
 }
 
 .navbar .navbar-brand {
-  position: fixed;
   padding-top: .3125rem;
   padding-bottom: .3125rem;
   color: #ffffff;
@@ -17837,7 +17841,7 @@ table.tablesorter thead tr .headerSortDown {
 }
 
 .main-panel>.content {
-  padding: 78px 30px 30px 280px;
+  padding: 78px 30px 30px 30px;
   min-height: calc(100vh - 70px);
 }
 
